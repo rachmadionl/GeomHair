@@ -1,0 +1,15 @@
+[submodule "submodules/LevelSetUDF"]
+	path = submodules/LevelSetUDF
+	url = https://github.com/rachmadionl/LevelSetUDF.git
+[submodule "submodules/LAVIS"]
+	path = submodules/LAVIS
+	url = https://github.com/salesforce/LAVIS.git
+[submodule "submodules/TEED"]
+	path = submodules/TEED
+	url = https://github.com/xavysp/TEED.git
+[submodule "submodules/NeuS"]
+	path = submodules/NeuS
+	url = https://github.com/Totoro97/NeuS.git
+[submodule "submodules/LLaVA"]
+	path = submodules/LLaVA
+	url = https://github.com/rachmadionl/LLaVA

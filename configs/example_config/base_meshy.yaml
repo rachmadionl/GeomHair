@@ -1,0 +1,151 @@
+sdf_chamfer: {
+    "num_points": 60000,
+    "mesh_outer_hair": "DATA_ROOT/CASE_NAME/000/mesh.obj",
+    "mesh_outer_hair_remeshed": "DATA_ROOT/CASE_NAME/000/mesh_remeshed.obj",
+    "blob_faces_idx": "DATA_ROOT/CASE_NAME/000/blob_face_indices.npy",
+}
+      
+textured_strands: {
+      "num_strands": 1900,
+      "max_num_strands": 100000,
+      "texture_size": 256,
+      "geometry_descriptor_size": 64,
+      "appearance_descriptor_size": 16,
+      "path_to_mesh": "DATA_ROOT/CASE_NAME/000/registration_scaled.ply",
+      "decoder_checkpoint_path": "./pretrained_models/strand_prior/strand_ckpt.pth",
+      "cut_scalp": "DATA_ROOT/CASE_NAME/000/cut_scalp_verts.pickle",
+  }
+
+diffusion_prior: {
+      "use_diffusion": true,
+      "start_denoise": 1,
+      "diffuse_mask": "DATA_ROOT/CASE_NAME/000/dif_mask.png",
+      "diffuse_bs": 32,
+      "diffuse_iter": 10000,
+      "n_diffuse_steps": 2,
+      "cfg_scale": 4.0,
+      "precompute_condition": "DATA_ROOT/CASE_NAME/000/dataset/features/00000",
+      # model: {
+      #     "type": "image_v1",
+      #     "dif_path": "./pretrained_models/diffusion_prior/dif_ckpt.pth",
+      #     "input_channels": 64,
+      #     "input_size": [32, 32],
+      #     "patch_size": 1,
+      #     "mapping_out": 256,
+      #     "depths": [2, 4, 4],
+      #     "channels": [128, 256, 512],
+      #     "mapping_cond_dim": 0,
+      #     "unet_cond_dim": 0,
+      #     "cross_cond_dim": 0,
+      #     "cross_attn_depths": None,
+      #     "self_attn_depths": [false, false, false],
+      #     "has_variance": true,
+      #     "dropout_rate": 0.05,
+      #     "skip_stages": 0,
+      #     "context_dim": 768,
+      #     "augment_wrapper": false,
+      #     "augment_prob": 0.12,
+      #     "sigma_data": 0.5,
+      #     "sigma_min": 0.5,
+      #     "sigma_max": 60,
+      #     "sigma_sample_density": {
+      #         "type": "lognormal",
+      #           "mean": -1.2,
+      #           "std": 1.2
+      #       },
+      # },
+      "model": {
+          "type": "openai",
+          "dif_path": "./pretrained_models/haar_prior/haar_diffusion_slim.pth",
+          "skip_stages": 0,
+          "input_size": [32, 32],
+          "num_res_blocks": 2,
+          "num_heads": 8,
+          "attention_resolutions": [ 4, 2, 1],
+          "channel_mult":  [ 1,2,4,4 ],
+          "input_channels": 64,
+          "model_channels": 320,
+          "num_head_channels": -1,
+          "use_spatial_transformer": true,
+          "context_dim": 768,
+          "use_scale_shift_norm": false,
+          "transformer_depth": 1,
+          "resblock_updown": false,
+          "legacy": false,
+          "has_variance": false,
+          "unet_cond_dim": 0,
+          "loss_config": "karras",
+          "loss_weighting": "soft-min-snr",
+          "dropout_rate": 0.05,
+          "augment_wrapper": false,
+          "augment_prob": 0.12,
+          "sigma_data": 0.5,
+          "sigma_min": 0.5,
+          "sigma_max": 80,
+          "sigma_sample_density": {
+              "type": "cosine-interpolated",
+          },
+      },
+  }
+  
+render: {
+    "use_render": true,
+    "image_size": 512,
+    "feat_size": 16,
+    "mesh_path": "./data/head_prior.obj",
+    "num_strands": 1900,
+    "strands_len": 99,
+    "logging_freq": 500,
+    "out_channels": 3,
+    "use_orients_cond": true,
+    "use_silh": true,
+    "orient_use_conf": false,
+    "alpha": 0.5,
+ }
+
+general: {
+    "lr": 0.001,
+    "starting_rendering_iter": 1,
+    "gamma": 0.5,
+    "milestones": [40000, 60000, 80000],
+    "orientation_path": "DATA_ROOT/CASE_NAME/000/orients_line_3_std_0.6.ply",
+    "orientation_mask": "DATA_ROOT/CASE_NAME/000/hole_indices_orient.npy",
+    "lifted_orientation_path": "DATA_ROOT/CASE_NAME/000/lifted_orients.ply",
+    "sdf_path": "DATA_ROOT/CASE_NAME/000/ckpt_040000.pth"
+  }
+  
+loss_factors: {
+    "volume": 1.,
+    "orient": 0.01,
+    "orient_2d": 0.05,
+    "chamfer": 1.,
+    "raster_silh": 0.00001,
+    "raster_l1": 0.001,
+    "raster_alpha": 0.0,
+    "L_diff": 0.003,
+  }
+
+udf_network: {
+    "d_out": 1,
+    "d_in": 3,
+    "d_hidden": 256,
+    "n_layers": 8,
+    "skip_in": [4],
+    "multires": 0,
+    "bias": 0.5,
+    "scale": 1.0,
+    "geometric_init": True,
+    "weight_norm": True,
+  }
+
+nsh_network: {
+  "latent_size": 0,
+  "in_dim": 3,
+  "decoder_hidden_dim": 256,
+  "nl": "sine",
+  "decoder_n_hidden_layers": 4,
+  "init_type": "siren",
+  "sphere_init_params": [1.6, 0.1],
+  "udf": False,
+  "vae": False,
+}
